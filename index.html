@@ -157,13 +157,18 @@ h1, h2 {
      </style>
 </head>
 <body>
-    <header class="navbar">
-  <div class="logo">MR-Haythem</div>
-  <nav>
-    <a href="index2.html">لوحة التحكم</a>
-    <a href="index1.html">الدروس</a>
-    <a href="index6.html">دخول</a>
-    <a href="index5.html">تسجيل</a>
+<header class="navbar">
+  <div class="logo">EduMaster</div>
+
+  <!-- زر الموبايل -->
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+  <nav id="navMenu">
+    <a href="dashboard.html">لوحة التحكم</a>
+    <a href="lessons.html">الدروس</a>
+    <a href="homework.html">الواجبات</a>
+    <a href="certificate.html">الشهادة</a>
+    <a href="#" onclick="logout()">تسجيل الخروج</a>
   </nav>
 </header>
 
@@ -211,6 +216,7 @@ h1, h2 {
 
 </body>
 </html>
+
 
 
 
