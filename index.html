@@ -4,196 +4,188 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المنصه التعليميه</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.cs">
      <style>
-         body {
-            font-family: -apple-system, BlinkMacSystemFont,
-             'Cairo', 'Segoe UI', Roboto, sans-serif;
-        }
-         body{
-            height: 800px;
-            background-image: linear-gradient(to top ,#131e11, transparent) ;
-        }
-        bod{
-            /* font-family: 'cairo' ,arial, sans-serif; */
-            margin: 0;
-            direction: rtl;
-            padding: 0;
-            background-color: #1976d2;
-            color: #333;
-            line-height: 1.8;
-        }
-        h1,h2{
-            text-align: center;
-            color: #ffffff;
-        }
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0, 1);
-        }
-        .intro {
-            font-size: 18px;
-            margin-bottom: 20px;
-            direction: rtl;
-        }
-        .features {
-            list-style: none;
-            padding: o;
-        }
-        .features li {
-            background: #e3f2fd;
-            margin: 10px 0;
-            padding: 12px;
-            border-right: 5px solid #1976d2;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        .courses a {
-            display: block;
-            text-decoration: none;
-            background: #1976d2;
-            color: #fff;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 17px;
-            transition: 0.3s;
-        }
-        .courses a:hover {
-            background: #0d47a1;
-        }
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #777;
-        }
-        p{
-            margin-bottom: 20px;
-            font-size: 18px;
-            line-height: 1.9;
-        }
-        h1 {
-            margin-bottom: 25px;
-        }
-        h2 {
-            margin-top: 40px;
-            margin-bottom: 20px;
-            color: black;
-            font-size: 10px;
-        }
-        ul li {
-            margin-bottom: 15px;
-            direction: rtl;
-        }
-        .subscribe {
-            text-align: center;
-            margin-top: 50px;
-            padding: 30px;
-            background: #f1f5ff;
-            border-radius: 10px;
-        }
-        .subscribe button {
-            background: #1976d2;
-            color: #fff;
-            border: none;
-            padding: 12px 30px;
-            font-size: 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .subscribe button:hover {
-            background: #0d47a1;
-        }
-        .subscribe p {
-            margin-top: 15px;
-            font-size: 16px;
-        }
-        .subscribe a{
-            color: #1976d2;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .subscribe a:hover {
-            text-decoration: underline;
-        }
-        .auto-buttons {
-            text-align: center;
-            margin-top: 40px;
-            box-shadow: 2px 3px 2px;
-            border-radius: 10px;
-            direction: rtl;
-        }
-        .auto-buttons a{
-            display: inline-block;
-            text-decoration: none;
-            margin: 10px;
-            padding: 12px 28px;
-            font-size: 18px;
-            border-radius: 8px;
-            transition: 0.3s;
-            font-weight: bold;
-        }
-        /* زرار سجل معنا  */
-        .auto-buttons a:first-child {
-            background: #2f042d;
-            color: #fff;
-            font-size: 2px;
-        }
-        /* زرار الدخول */
-        .auto-buttons a:last-child {
-            background: #2f042d;
-            color: #f3f5f7;
-            font-size: 10px;
-        }
-        .auto-buttons a:hover {
-            /* transform: translateY(-3px); */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0, 15);
-        }
+               body {
+  font-family: 'Cairo', sans-serif;
+  background: #f4f7fb;
+  margin: 0;
+  direction: rtl;
+}
+
+/* العناوين */
+h1, h2 {
+  text-align: center;
+  color: #1e3a8a;
+}
+
+/* النماذج */
+.form-container {
+  width: 350px;
+  margin: 60px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.form-container input,
+.form-container select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.form-container button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(to right, #2563eb, #38bdf8);
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.form-container button:hover {
+  opacity: 0.9;
+}
+
+/* صورة الأستاذ */
+.teacher {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.teacher img {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 5px solid #60a5fa;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+/* الكورسات */
+.courses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.course-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+}
+
+.course-card button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  background: #0f172a;
+  color: white;
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+ .logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+.navbar a {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+  font-size: 16px;
+} */
+
+.register-btn {
+  background: #38bdf8;
+  padding: 8px 15px;
+  border-radius: 8px;
+  color: #0f172a !important;
+}
      </style>
 </head>
+<body>
+    <header class="navbar">
+  <div class="logo">MR-Haythem</div>
+  <nav>
+    <a href="index2.html">لوحة التحكم</a>
+    <a href="index1.html">الدروس</a>
+    <a href="index6.html">دخول</a>
+    <a href="index5.html">تسجيل</a>
+  </nav>
+</header>
 
-    <h2 class="auto-buttons">MR.HAYTHEM
-        <a href="index6.html" target="_blank">دخول</a>
-        <a href="index5.html" target="_blank">سجل معانا</a>  
-        
-    </h2>
-    <div></div>
-    <div class="container">
-        <p class="intro">منصتك الاولي لتعلم وفهم الرياضيات للمرحله الاعداديه و الثانويه باسلوب بسيط وممتع</p>
-        <!-- <ul class="features">
-            <li>شرح بسيط ومفهوم</li>
-            <li>فيديوهات برسومات توضيحيه</li>
-            <li>تمارين تفاعليه علي الدروس</li>
-            <li>مراجعه كامله في نهايه كل وحده</li>
-        </ul> -->
-        <h2>كورساتنا المتاحه للعام 2025/2026</h2>
-        <div class="courses">
-          <a href="index1.html" target="_blank">الصف الاول الثانوي</a><br>
-          <a href="index2.html" target="_blank">الصف الثاني الثانوي</a><br>
-          <a href="index3.html" target="_blank">الصف الثالث الثانوي</a>
-        </div>
+<script src="js/auth.js"></script>
+  </nav>
+</header>
+    <header>
+  <h1>منصة الأستاذ هيثم التعليمية</h1>
+</header>
 
+<section class="teacher">
+  <img src="WhatsAp Image 2026-01-25 at 12.01.36 AM.jpeg" alt="صورة الأستاذ">
+  <p>
+    الأستاذ هيثم – خبرة أكثر من 10 سنوات في تدريس الرياضيات  لطلبة الإعدادي والثانوي.
+  </p>
+</section>
+
+<section class="courses">
+
+  <div class="course-card">
+    <h3>رياضيات أولى ثانوي</h3>
+    <p>المرحلة: ثانوي</p>
+    <p>عدد الدروس: 24</p>
+    <p class="price">السعر: 250 جنيه</p>
+    <button>اشترك الآن</button>
+  </div>
+
+  <div class="course-card">
+    <h3>رياضيات اولي اعدادي</h3>
+    <p>المرحلة: إعدادي</p>
+    <p>عدد الدروس: 18</p>
+    <p class="price">السعر: 180 جنيه</p>
+    <button>اشترك الآن</button>
+  </div>
+
+</section>
     </div>
     <div class="subscribe">
-        <button>اشترك الآن</button>
-        <p>جاهز؟ 
-            <a href="index5.html" target="_blank">انضم الينا</a>
-        </p> 
-            <div class="inter">
-            <a href="index11.html" target="_blank">التواصل</a></div>
-        </div>
+    <button>اشترك الآن</button>
+    <p>جاهز؟ <a href="index5.html" target="_blank">انضم الينا</a></p>
+    <div class="inter">
+        <a href="index11.html" target="_blank">التواصل</a></div>
     </div>
-    
-</body>
 
+
+</body>
 </html>
+
 
 
 
