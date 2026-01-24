@@ -14,29 +14,46 @@
 }
 
 
-         /* Responsive Navbar للموبايل */
+       /* زر الموبايل */
+.menu-toggle {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* Responsive Navbar */
 @media (max-width: 768px) {
 
   .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 15px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .menu-toggle {
+    display: block;
   }
 
   .navbar nav {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background: white;
     width: 100%;
-    display: flex;
+    display: none;
     flex-direction: column;
-    margin-top: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   }
 
   .navbar nav a {
-    padding: 12px;
-    width: 100%;
-    text-align: right;
+    padding: 15px;
     border-bottom: 1px solid #e5e7eb;
+    text-align: right;
   }
 
+  .navbar nav.show {
+    display: flex;
+  }
 }
 
 /* العناوين */
@@ -216,6 +233,7 @@ h1, h2 {
 
 </body>
 </html>
+
 
 
 
