@@ -1,55 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>التسجيل</title>
     <style>
-        body{
-            height: 800px;
-            background-image: linear-gradient(to top ,#131e11, transparent) ;
-            direction: rtl;
+        input{
+            text-align: right;
         }
     </style>
 </head>
 <body>
-    <h3>منصه اليسر</h3>
-    
-    <div> لدي حساب  <a href="index6.html" target="_blank">ادخل الي حسابك الآن</a></div><br>
-    <div>
-        <label for="name"></label>
-        <input type="text" placeholder="الاسم الاول" id="name" required>
-    </div><br>
-    <div>
-        <label for="name2"></label>
-        <input type="text" placeholder="الاسم الثاني" id="name2" required>
-    </div><br>
-    <div>
-        <label for="name3"></label>
-        <input type="text" placeholder="الاسم الثالث" id="name3" required>
-    </div> <br>
-    <div>
-        <label for="name4"></label>
-        <input type="text" placeholder="الاسم الاخير" id="name4" required>
-    </div><br>
-    <div>
-        <label for="phone"></label>
-        <input type="number" placeholder="رقم الهاتف" id="phone" required>
-    </div><br>
-    <div>
-        <label for="phone2"></label>
-        <input type="number" placeholder="رقم هاتف ولي الامر" id="phone2" required>
-    </div><br>
-    <div>
-        <label for="pass"></label>
-        <input type="password" placeholder="كلمه السر" id="pass" required>
-    </div><br> 
-    <h3><mark>تنبيه </mark> انشئ كلمه سر قويه</h3>
-    <div>
-        <input type="submit" value="التالي">
+    <div class="navbar"> لدي حساب 
+         <a href="index6.html" target="_blank">ادخل الي حسابك الآن</a>
     </div>
+    <form action="">
+        <div class="container">
+            <label for="name"></label>
+            <input type="text" placeholder="الاسم الاول" id="name" required>
+        </div>
+        </div>
+        <div class="container">
+            <label for="phone"></label>
+            <input type="tel" placeholder="01********* " id="phone" required>
+        </div>
+        <div class="container"></div>
+            <label for="phone2"></label>
+            <input type="tel" placeholder="01********* " id="phone2" required>
+        </div>
+        <div class="container">
+        <label for="governorate"> المحافظة</label>
+        <select id="governorate" name="governorate" required>
+                <option value="">-- اختر المحافظة --</option>
+                <option value="cairo">القاهرة</option>
+                <option value="giza">الجيزة</option>
+                <option value="alexandria">الإسكندرية</option>
+                <option value="qalyubia">القليوبية</option>
+                <option value="dakahliya">الدقهلية</option>
+                <option value="beheira">البحيرة</option>
+                <option value="gharbiya">الغربية</option>
+                <option value="menoufia">المنوفية</option>
+                <option value="kafr_el_sheikh">كفر الشيخ</option>
+                <option value="suez">السويس</option>
+                <option value="ismailia">الإسماعيلية</option>
+                <option value="port_said">بورسعيد</option>
+                <option value="south_sinai">جنوب سيناء</option>
+                <option value="north_sinai">شمال سيناء</option>
+                <option value="red_sea">البحر الأحمر</option>
+                <option value="menya">المنيا</option>
+                <option value="assiut">أسيوط</option>
+                <option value="sohag">سوهاج</option>
+                <option value="qena">قنا</option>
+                <option value="luxor">الأقصر</option>
+                <option value="aswan">أسوان</option>
+                <option value="fayoum">الفيوم</option>
+                <option value="beni_suef">بني سويف</option>
+                <option value="wady gaded">الوادي الجديد</option>
+                <option value="sharqya">الشرقيه</option>
+                <option value="domiyat">دمياط</option>
+                <option value="">مطروح</option>
+        </select>
+        </div>
+        <div class="container">
+            <label for="governorate">المرحله الدراسيه</label>
+            <select name="governorate" id="governorate">
+                <option value="ekhtar">-- اختر المرحلة الدراسيه --</option>
+                <option value="one-1">الاعداديه</option>
+                <option value="one-2">الثانويه</option>
+            </select>
+        </div>
+        <div class="container">
+            <label for="governorate"> الصف الدراسي</label>
+            <select name="governorate" id="governorate">
+                <option value="ekhtar">-- اختر الصف الدراسي --</option>
+                <option value="one-11">الصف الاول </option>
+                <option value="one-22">الصف الثاني</option>
+                <option value="one-33">الصف الثالث</option>
+            </select>
+        </div>
+        <div class="container">
+            <label for="pass">;كلمه المرور</label>
+            <input type="password" placeholder="xx@#$&11 " id="pass" required>
+        </div>
+            <p><mark>تنبيه </mark> انشئ كلمه سر قويه</p>
+            <input type="submit" value="التالي">
+    </form>
+
 </body>
+</html>
 
 </html>
+
 
 
