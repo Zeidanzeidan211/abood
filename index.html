@@ -1,255 +1,183 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنصه التعليميه</title>
-    <link rel="stylesheet" href="style.cs">
-     <style>
-         body {
-              font-family: 'Cairo', sans-serif;
-              background: #f4f7fb;
-              margin: 0;
-              direction: rtl;
-            }
-
-
-       /* زر الموبايل */
-.menu-toggle {
-  display: none;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-/* Responsive Navbar */
-@media (max-width: 768px) {
-
-  .navbar {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .menu-toggle {
-    display: block;
-  }
-
-  .navbar nav {
-    position: absolute;
-    top: 70px;
-    right: 0;
-    background: white;
-    width: 100%;
-    display: none;
-    flex-direction: column;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  }
-
-  .navbar nav a {
-    padding: 15px;
-    border-bottom: 1px solid #e5e7eb;
-    text-align: right;
-  }
-
-  .navbar nav.show {
-    display: flex;
-  }
-}
-
-/* العناوين */
-h1, h2 {
-  text-align: center;
-  color: #1e3a8a;
-}
-
-/* النماذج */
-.form-container {
-  width: 350px;
-  margin: 60px auto;
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-}
-
-.form-container input,
-.form-container select {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.form-container button {
-  width: 100%;
-  padding: 12px;
-  background: linear-gradient(to right, #2563eb, #38bdf8);
-  border: none;
-  color: white;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.form-container button:hover {
-  opacity: 0.9;
-}
-
-/* صورة الأستاذ */
-.teacher {
-  text-align: center;
-  margin: 40px 0;
-}
-
-.teacher img {
-  width: 250px;
-  height: 250px;
-  border-radius: 50%;
-  border: 5px solid #60a5fa;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-
+    <title>MR. Abdelrhman | منصة الوحش</title>
+        <meta content="width=550, user-scalable=no" name="viewport"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-}
-
-/* الكورسات */
-.courses {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.course-card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  transition: 0.3s;
-}
-
-.course-card:hover {
-  transform: translateY(-5px);
-}
-
-.course-card button {
-  margin-top: 10px;
-  padding: 10px;
-  width: 100%;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 8px;
-}
-
-/* Navbar */
-.navbar {
-  position: sticky;
-  top: 0;
-  background: #0f172a;
-  color: white;
-  padding: 15px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 1000;
-}
-
- .logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: #38bdf8;
-}
-
-.navbar a {
-  color: white;
-  margin-left: 20px;
-  text-decoration: none;
-  font-size: 16px;
-} */
-
-.register-btn {
-  background: #38bdf8;
-  padding: 8px 15px;
-  border-radius: 8px;
-  color: #0f172a !important;
-}
-   .subscribe{
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  border-radius: 15PX;
-  padding: 12PX;
-  font-size: 18PX;
-  padding: 10px 2px;
-}
-.subscribe P .inter{
-  list-style: none;
-  background-color: #2563eb;
-  border-radius: 8px;
-  padding: 15px;
-  color: #f4f7fb;
-  margin: auto;
-  font-size: x-large;
-  border: none;
-  /* width: 100%; */
-    text-decoration: none;
-}
- </style>
-</head>
-<body>
-<header class="navbar">
-  <div class="logo">ENG-ABDELRHMAN</div>
-
-  <!-- زر الموبايل -->
-  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-
-      <nav id="navMenu">
-        <a href="dashboard.html">لوحة التحكم</a>
-        <a href="lessons.html">الدروس</a>
-        <a href="homework.html">الواجبات</a>
-        <a href="certificate.html">الشهادة</a>
-        <a href="#" onclick="logout()">تسجيل الخروج</a>
-      </nav>
-</header>
-  </nav>
-</header>
-    <header>
-  <h1>منصة المهندس عبدالرحمن أحمد التعليمية</h1>
-</header>
-
-<section class="teacher">
-  <img src="https://i.ibb.co/KcqHDFG0/IMG-20260127-WA0029.jpg" alt="صورة الأستاذ">
-  <p>
-المهندس عبدالرحمن أحمد_ لتدريس ماده الرياضيات للمرحله الاعداديه والثانويه  </p>
-</section>
-
-<section class="courses">
-
-  <div class="course-card">
-    <h3>رياضيات اولي اعدادي</h3>
-    <p>المرحلة: اعدادي</p>
-    <p>عدد الدروس: 24</p>
-    <p class="price">السعر: 250 جنيه</p>
-    <button>اشترك الآن</button>
-  </div>
-
-  <div class="course-card">
-    <h3>رياضيات تانيه اعدادي</h3>
-    <p>المرحلة: إعدادي</p>
-    <p>عدد الدروس: 18</p>
-    <p class="price">السعر: 180 جنيه</p>
-    <button>اشترك الآن</button>
-  </div>
-
-</section>
-    </div>
-    <div class="subscribe">
-    <h4>اذا لم يكن لديك حساب يمكنك انشاء حساب الان</h4>
-    <p>جاهز؟ <a href="index5.html" target="_blank">انضم الينا</a></p>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f4f1ee; scroll-behavior: smooth; }
         
-        <a href="index11.html" target="_blank" class="inter">المصمم </a></div>
+        /* الهيدر الغامق العريض زي الصورة */
+        .hero-banner {
+            background: linear-gradient(rgba(42, 31, 25, 0.92), rgba(42, 31, 25, 0.92)), 
+                        url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            border-bottom: 6px solid #8b5e3c;
+        }
 
+        .master-frame {
+            border: 4px solid white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        /* كروت المعرض الثابتة */
+        .static-card {
+            background: #2a1f19;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            transition: 0.3s;
+            border: 1px solid #4a3a2e;
+        }
+        .static-card:hover { transform: scale(1.03); border-color: #8b5e3c; }
+
+        /* كروت الكورسات اللي من الداتابيز */
+        .db-card {
+            background: white;
+            border-radius: 2rem;
+            border: 1px solid #e5e7eb;
+            transition: 0.3s;
+        }
+        
+        .primary-bg { background-color: #8b5e3c; }
+        .primary-text { color: #8b5e3c; }
+    </style>
+</head>
+
+<body>
+
+    <nav class="bg-white py-4 px-8 flex justify-between items-center shadow-sm sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 primary-bg rounded-xl flex items-center justify-center text-white shadow-lg">
+                <i data-lucide="dna"></i>
+            </div>
+            <span class="font-black text-2xl tracking-tighter uppercase">Mr. Ahmed Ali</span>
+        </div>
+        <div class="flex gap-3">
+            <a href="login.html" class="px-6 py-2 font-bold primary-text border-2 border-[#8b5e3c] rounded-xl hover:bg-[#8b5e3c] hover:text-white transition">دخول</a>
+            <a href="signup.html" class="px-6 py-2 font-bold bg-[#8b5e3c] text-white rounded-xl shadow-md hover:opacity-90 transition">سجل معانا</a>
+        </div>
+    </nav>
+
+    <section class="hero-banner py-20 px-6">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
+            <div class="md:w-1/2 text-right text-white space-y-6">
+                <h1 class="text-5xl md:text-7xl font-black leading-tight">
+                     <span class="primary-text"> منصة </span> النخبة <br> 
+            التعليميه ..   </h1>
+                <p class="text-slate-300 text-xl font-bold leading-relaxed">
+                    يا وحش.. مكانك هنا وسط الأوائل. شرح بالهداوة، رسومات 3D، ومتابعة مابتخلصش لحد ما تخلص لجنة الامتحان.
+                </p>
+                <div class="pt-6">
+                    <a href="#courses-gallery" class="px-10 py-5 bg-[#8b5e3c] text-white rounded-2xl font-black text-xl shadow-2xl hover:bg-[#5d3a1d] transition inline-flex items-center gap-3">
+                        شوف المحاضرات المتاحة
+                        <i data-lucide="arrow-left-circle"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 bg-white">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-black text-slate-800 mb-10 text-right flex items-center gap-3">
+                <span class="w-10 h-1 bg-[#8b5e3c] rounded-full"></span>
+                أهم المراحل الدراسية
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="static-card">
+                    <img src="https://i.ibb.co/6cWTJHMf/FB-IMG-1769976360360.jpg" class="w-full h-64 object-cover opacity-80 hover:opacity-100 transition">
+                    <div class="p-4 text-center text-white font-bold text-sm"> تالتة ثانوي</div>
+                </div>
+                <div class="static-card">
+                    <img src="https://i.ibb.co/1tDSx7KY/FB-IMG-1769976399928.jpg" class="w-full h-64 object-cover opacity-80 hover:opacity-100 transition">
+                    <div class="p-4 text-center text-white font-bold text-sm"> تالته اعدادي</div>
+                </div>
+                <div class="static-card">
+                    <img src="https://i.ibb.co/KcqHDFG0/IMG-20260127-WA0029.jpg" class="w-full h-64 object-cover opacity-80 hover:opacity-100 transition">
+                    <div class="p-4 text-center text-white font-bold text-sm"> جميع الكورسات</div>
+                </div>
+                <div class="static-card">
+                    <img src="https://i.ibb.co/j90zN6Wx/FB-IMG-1769976372913.jpg" class="w-full h-64 object-cover opacity-80 hover:opacity-100 transition">
+                    <div class="p-4 text-center text-white font-bold text-sm">رؤية المنصة</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="courses-gallery" class="py-20 px-6">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-12">
+                <div class="h-1 flex-1 bg-slate-200 ml-6 rounded-full"></div>
+                <h2 class="text-3xl font-black text-slate-800">كورسات متاحة دلوقتي</h2>
+            </div>
+
+            <div id="db-courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="bg-white h-96 animate-pulse rounded-[2rem]"></div>
+                <div class="bg-white h-96 animate-pulse rounded-[2rem]"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#2a1f19] py-10 px-6 text-center">
+        <p class="text-white font-black text-lg"> مصمم المنصه " ABOOD " </p>
+        <p class="text-slate-500 font-bold mt-2">مستني إيه؟ ابدأ طريقك للقمة دلوقتي!</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://hinwzmshejgxpfuszdjv.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_oJIAhj1JnB9rkehdiOdNrQ_9WgMuo5y';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loadData() {
+            const container = document.getElementById('db-courses-container');
+            
+            try {
+                const { data: courses, error } = await db.from('courses').select('*').order('created_at', {ascending: false});
+                if(error) throw error;
+
+                if(!courses || courses.length === 0) {
+                    container.innerHTML = `<p class="col-span-full text-center py-20 font-bold text-slate-400">مفيش محاضرات جديدة نزلت لسة..</p>`;
+                    return;
+                }
+
+                container.innerHTML = courses.map(c => `
+                    <div class="db-card overflow-hidden shadow-xl shadow-brown-900/5">
+                        <div class="h-60 overflow-hidden">
+                            <img src="${c.image_url}" onerror="this.src='https://via.placeholder.com/400x300?text=Course'" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-8 text-right">
+                            <span class="primary-text text-xs font-black uppercase tracking-widest">${c.stage}</span>
+                            <h3 class="text-2xl font-black text-slate-800 mt-2 mb-4">${c.title}</h3>
+                            <div class="flex items-center justify-between border-t pt-6">
+                                <span class="text-xl font-black primary-text">${c.price} ج.م</span>
+                                <a href="signup.html" class="px-6 py-2 bg-slate-900 text-white rounded-xl font-black text-sm hover:bg-[#8b5e3c] transition">
+                                    اشترك دلوقتي
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (e) {
+                container.innerHTML = `<p class="col-span-full text-center text-red-500 font-bold">مشكلة في التحميل، رفرش الصفحة</p>`;
+            }
+        }
+
+        loadData();
+        lucide.createIcons();
+    </script>
 </body>
 </html>
+
+
 
 
 
