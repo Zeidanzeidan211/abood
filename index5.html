@@ -1,95 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صفحه تسجيل الدخول | مهندس عبدالرحمن</title>
-    <link rel="stylesheet" href="css.css">
-     <style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>انضم لينا | النخبة التعليمية</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-body{
-    background-image:linear-gradient( rgb(68, 193, 172), rgba(0, 0, 255, 0.422) ,rgb(68, 193, 172)) ;
-    align-items: center;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-}
-img{
-    width: 150px;
-    height: 150px;
-    text-align: center;
-    border-radius:50% ;
-    border:solid 4px #2f14b8 ; 
-}
-.imgg{
-    padding: 10px;
-}
-form{
-    color: #8c85af;
-    padding: 10px;
-    width: 80%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #ccc;
-    padding-top: 15px;
-}
-img:hover{
-    box-shadow: 1px 1px 0px 0.2px ;
-}
-form input{
-    background-color: #ccccdce1;
-    color: rgb(255, 255, 255);
-    border: none;
-    outline: none;
-    flex-basis: 200px;
-    padding: 5px 10px;
-    /* text-align: left; */
-    flex-grow: 1;
-    box-shadow: .5px 1px 2px 0.1px;
-    border-radius: 2px;
-    text-align:"right";
-}
-form button{
-    background-color: rgb(106, 120, 148);
-    flex-grow: 1;
-    color: white;
-    cursor: pointer;
-    padding: 5px 10px;
-    width: 60px;
-    border: none;
-}
-span{
-    font-size: large;
-    font-weight: bold;
-    padding-bottom: 15px;
-    display: block;
-}
-
-     </style>
+  <style>
+    body { font-family: "Cairo", sans-serif; background: #fdfbf9; min-height: 100vh; }
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid #f1f5f9; box-shadow: 0 25px 50px -12px rgba(139, 94, 60, 0.1); }
+    .custom-input { transition: all 0.3s ease; background: #f8fafc; border: 2px solid #f1f5f9; }
+    .custom-input:focus { border-color: #8b5e3c; background: white; box-shadow: 0 10px 15px -3px rgba(139, 94, 60, 0.1); outline: none; }
+    .btn-premium { background: linear-gradient(135deg, #8b5e3c 0%, #5d3a1d 100%); transition: all 0.3s ease; }
+    .btn-premium:active { transform: scale(0.98); }
+    #toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 10000; }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    .loader { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #fff; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
 </head>
-<body>
-    <div class="imgg">
-        <img src="https://i.ibb.co/99znSCVJ/IMG-20260131-164452.png" alt="">
+
+<body class="flex flex-col">
+
+<header class="w-full bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-[#8b5e3c] rounded-2xl flex items-center justify-center shadow-lg">
+        <i class="fas fa-user-plus text-white text-lg"></i>
+      </div>
+      <h1 class="text-xl font-black text-slate-800">النخبة <span class="text-[#8b5e3c]">التعليمية</span></h1>
     </div>
-        <div>
-        <span>
-            انشئ حسابك الان
-        </span>
+    <a href="index6.html" class="text-xs font-black text-[#8b5e3c] bg-amber-50 px-5 py-2.5 rounded-xl hover:bg-[#8b5e3c] hover:text-white transition-all">
+      عندك حساب؟ ادخل
+    </a>
+  </div>
+</header>
+
+<main class="flex-grow flex items-center justify-center px-5 py-12">
+  <div class="max-w-2xl w-full glass-card rounded-[3rem] p-8 md:p-12">
+    
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-black text-slate-800 mb-2">انضم لكتيبة المتفوقين! 🚀</h2>
+      <p class="text-slate-400 font-bold text-sm">سجل بياناتك وابدأ رحلة الـ 100%</p>
     </div>
-    <form>
-        <input type="text" placeholder="أدخل اسمك كاملاً" required>
-        <input type="tel" placeholder="رقم الهاتف(واتساب)" required>
-        <input type="tel" placeholder="رقم هاتف ولي الامر" required>
-        <input type="email" placeholder="email" required>
-        <input type="password" placeholder="كلمه المرور" required>
-        <button type="submit">send</button>
+
+    <form id="registerForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <div class="md:col-span-2 space-y-2">
+        <label class="block text-xs font-black text-slate-400 uppercase mr-1 tracking-widest">اسمك بالكامل</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 right-4 flex items-center text-slate-300">
+            <i class="fas fa-user-graduate"></i>
+          </span>
+          <input id="fullName" type="text" placeholder="اكتب اسمك رباعي " 
+                 class="custom-input w-full pr-12 pl-4 py-4 rounded-2xl font-bold text-slate-700">
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-xs font-black text-slate-400 uppercase mr-1 tracking-widest">رقم الهاتف (واتساب)</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 right-4 flex items-center text-slate-300">
+            <i class="fas fa-phone-alt"></i>
+          </span>
+          <input id="studentNumber" type="text" placeholder="01xxxxxxxxx" 
+                 class="custom-input w-full pr-12 pl-4 py-4 rounded-2xl font-bold text-slate-700">
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-xs font-black text-slate-400 uppercase mr-1 tracking-widest">رقم هاتف ولي الأمر</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 right-4 flex items-center text-slate-300">
+            <i class="fas fa-restroom"></i>
+          </span>
+          <input id="parentNumber" type="text" placeholder="01xxxxxxxxx" 
+                 class="custom-input w-full pr-12 pl-4 py-4 rounded-2xl font-bold text-slate-700">
+        </div>
+      </div>
+
+      <div class="md:col-span-2 space-y-2">
+        <label class="block text-xs font-black text-slate-400 uppercase mr-1 tracking-widest">اختار كلمة سر قوية</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 right-4 flex items-center text-slate-300">
+            <i class="fas fa-shield-halved"></i>
+          </span>
+          <input id="password" type="password" placeholder="اكتب كلمة السر هنا" 
+                 class="custom-input w-full pr-12 pl-4 py-4 rounded-2xl font-bold text-slate-700">
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="md:col-span-2 btn-premium w-full py-5 rounded-[1.5rem] text-white font-black text-lg shadow-xl shadow-amber-900/10 flex items-center justify-center gap-3">
+        <span id="btnText">جاهز للتفوق.. سجلني!</span>
+        <div id="btnLoader" class="loader hidden"></div>
+      </button>
+
     </form>
+
+    <div class="mt-10 p-5 bg-slate-50 rounded-3xl border border-slate-100">
+      <p class="text-center text-slate-500 text-[11px] font-bold leading-relaxed">
+        بمجرد ضغطك على تسجيل، فأنت موافق على <span class="text-[#8b5e3c]">قواعد المنصة</span> واحترام خصوصية زمايلك.
+      </p>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="flex items-center px-8 py-4 rounded-3xl shadow-2xl text-white font-black text-sm">
+  <i id="toastIcon" class="ml-3 text-lg"></i>
+  <span id="toastText"></span>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://hinwzmshejgxpfuszdjv.supabase.co'
+  const SUPABASE_KEY = 'sb_publishable_oJIAhj1JnB9rkehdiOdNrQ_9WgMuo5y'
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+  function showToast(msg, type = 'error') {
+    const toast = document.getElementById('toast')
+    const icon = document.getElementById('toastIcon')
+    const text = document.getElementById('toastText')
+    text.textContent = msg
+    if (type === 'success') {
+      toast.style.background = '#059669'
+      icon.className = 'fas fa-check-circle'
+    } else {
+      toast.style.background = '#e11d48'
+      icon.className = 'fas fa-triangle-exclamation'
+    }
+    toast.classList.add('show')
+    setTimeout(() => toast.classList.remove('show'), 4000)
+  }
+
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    
+    const submitBtn = document.getElementById('submitBtn')
+    const btnText = document.getElementById('btnText')
+    const btnLoader = document.getElementById('btnLoader')
+
+    const parentNumber = document.getElementById('parentNumber').value.trim()
+    const studentNumber = document.getElementById('studentNumber').value.trim()
+    const fullName = document.getElementById('fullName').value.trim()
+    const password = document.getElementById('password').value.trim()
+
+    if (!parentNumber || !studentNumber || !fullName || !password) {
+      showToast('كمل بياناتك يا بطل، متبقاش كسلان!')
+      return
+    }
+
+    // Start Loading
+    submitBtn.disabled = true
+    btnText.textContent = 'بنشوف بياناتك..'
+    btnLoader.classList.remove('hidden')
+
+    try {
+      // التأكد من عدم وجود الحساب مسبقاً
+      const { data: existing } = await db
+        .from('profiles')
+        .select('id')
+        .eq('student_number', studentNumber)
+        .maybeSingle()
+
+      if (existing) {
+        showToast('الرقم ده مسجل عندنا فعلاً، سجل دخولك!')
+        stopLoading()
+        return
+      }
+
+      // إضافة البيانات
+      const { error } = await db.from('profiles').insert([{
+        parent_number: parentNumber,
+        student_number: studentNumber,
+        full_name: fullName,
+        password: password,
+        balance: 0 // رصيد البداية
+      }])
+
+      if (error) throw error
+
+      showToast('مبروك.. حسابك اتعمل بنجاح! جاري تحويلك..', 'success')
+      setTimeout(() => window.location.href = 'login.html', 2000)
+
+    } catch (err) {
+      showToast('حصل مشكلة بسيطة، جرب تاني يا وحش')
+      stopLoading()
+    }
+  })
+
+  function stopLoading() {
+    const submitBtn = document.getElementById('submitBtn')
+    const btnText = document.getElementById('btnText')
+    const btnLoader = document.getElementById('btnLoader')
+    submitBtn.disabled = false
+    btnText.textContent = 'جاهز للتفوق.. سجلني!'
+    btnLoader.classList.add('hidden')
+  }
+</script>
+
 </body>
 </html>
+
 
 
 
