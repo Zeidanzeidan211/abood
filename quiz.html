@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>الاختبار الذكي | النخبة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #fdfbf9; }
+        .brown-btn { background: linear-gradient(135deg, #8b5a2b 0%, #5d3a1d 100%); transition: all 0.3s ease; }
+        .brown-btn:hover { transform: scale(1.02); shadow: 0 10px 20px rgba(139, 90, 43, 0.3); }
+        
+        .option-card { display: flex; align-items: center; padding: 1.25rem; border: 2px solid #f1f5f9; border-radius: 1.5rem; background: white; cursor: pointer; transition: all 0.2s; position: relative; }
+        input[type="radio"]:checked + .option-card { border-color: #8b5a2b; background: #fffbeb; box-shadow: 0 5px 15px rgba(139, 90, 43, 0.05); }
+        input[type="radio"]:checked + .option-card::after { content: '\f058'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 1.5rem; color: #8b5a2b; }
+        
+        #main-quiz { display: none; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="min-h-screen pb-10">
+
+<div id="loader" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
+    <div class="w-14 h-14 border-4 border-amber-100 border-t-amber-800 rounded-full animate-spin mb-6"></div>
+    <p class="font-black text-slate-800 text-lg">بنجهز لك لجنة الامتحان.. ركز يا بطل!</p>
+</div>
+
+<main id="main-quiz" class="max-w-3xl mx-auto p-5 mt-6 fade-in">
+    <div id="quiz-form-area"></div>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://hinwzmshejgxpfuszdjv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_oJIAhj1JnB9rkehdiOdNrQ_9WgMuo5y';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const lessonId = new URLSearchParams(window.location.search).get('lesson_id');
+const studentId = localStorage.getItem('student_number');
+let globalLessonName = "";
+
+async function initialize() {
+    if (!studentId || !lessonId) {
+        Swal.fire('خطأ', 'لازم تسجل دخول الأول يا وحش', 'error').then(() => location.href='login.html');
+        return;
+    }
+
+    const { data: lessonData } = await db.from('lessons').select('title').eq('id', lessonId).maybeSingle();
+    globalLessonName = lessonData?.title || "اختبار مجهول";
+
+    const { data: record } = await db.from('student_results').select('*').eq('student_id', String(studentId)).eq('lesson_id', String(lessonId)).maybeSingle();
+
+    if (record) {
+        showFinal(record.score, record.total_questions, true, record.lesson_name);
+    } else {
+        renderQuiz();
+    }
+}
+
+async function renderQuiz() {
+    const { data: questions } = await db.from('quizzes').select('*').eq('lesson_id', lessonId);
+    
+    if (!questions || questions.length === 0) {
+        document.body.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-screen text-center p-10">
+                <i class="fas fa- hourglass-half text-5xl text-amber-200 mb-4"></i>
+                <h2 class="text-2xl font-black text-slate-800">لسه مفيش أسئلة نزلت للدرس ده</h2>
+                <button onclick="window.history.back()" class="mt-6 text-amber-800 font-bold underline">ارجع كمل مذاكرة</button>
+            </div>`;
+        return;
+    }
+
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('main-quiz').style.display = 'block';
+
+    let html = `
+        <div class="text-center mb-8">
+            <span class="bg-amber-100 text-amber-800 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 inline-block">اختبار ذكي</span>
+            <h1 class="text-3xl font-black text-slate-900">${globalLessonName}</h1>
+        </div>
+        <form id="actualForm" class="space-y-8">`;
+
+    questions.forEach((q, i) => {
+        html += `
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-50">
+                <div class="flex items-start gap-4 mb-6">
+                    <span class="w-8 h-8 rounded-xl bg-slate-900 text-white flex-shrink-0 flex items-center justify-center font-black text-sm">${i+1}</span>
+                    <p class="font-black text-lg text-slate-800 leading-relaxed">${q.question || q.question_text}</p>
+                </div>
+                <div class="grid gap-3">
+                    ${['a','b','c','d'].filter(o => q['option_'+o]).map(o => `
+                        <label class="block">
+                            <input type="radio" name="q${i}" value="${o}" class="hidden" required>
+                            <div class="option-card group">
+                                <span class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center ml-4 text-xs font-black text-slate-400 group-hover:bg-amber-100 transition-all uppercase">${o}</span>
+                                <span class="font-bold text-slate-700">${q['option_'+o]}</span>
+                            </div>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>`;
+    });
+
+    html += `
+        <button type="submit" class="brown-btn text-white p-6 rounded-[2rem] font-black w-full text-xl mt-10 shadow-xl">
+            خلصت يا بطل.. أرسل إجاباتك <i class="fas fa-paper-plane mr-2"></i>
+        </button>
+    </form>`;
+    
+    document.getElementById('quiz-form-area').innerHTML = html;
+    document.getElementById('actualForm').onsubmit = e => { e.preventDefault(); submit(questions); };
+}
+
+async function submit(questions) {
+    const confirm = await Swal.fire({
+        title: 'متأكد إنك خلصت؟',
+        text: "مش هتعرف تعدل إجاباتك تاني بعد ما تدوس!",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'أيوه، خلصت',
+        cancelButtonText: 'لسه براجع',
+        confirmButtonColor: '#8b5a2b',
+        borderRadius: '2rem'
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    Swal.fire({ title: 'بنحسب درجاتك.. ثانية واحدة', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    let score = 0;
+    questions.forEach((q, i) => {
+        const sel = document.querySelector(`input[name="q${i}"]:checked`);
+        if (sel) {
+            const correct = (q.correct_option || q.answer || "").toString().trim().toLowerCase();
+            if (sel.value === correct || q['option_'+sel.value].toString().toLowerCase() === correct) score++;
+        }
+    });
+
+    const { error } = await db.from('student_results').insert({
+        student_id: String(studentId),
+        lesson_id: String(lessonId),
+        lesson_name: globalLessonName,
+        score: parseInt(score),
+        total_questions: parseInt(questions.length),
+        time_taken: 0
+    });
+
+    Swal.close();
+
+    if (error) {
+        Swal.fire('مشكلة فنية', 'الدرجة متسجلتش، كلم الدعم يا بطل', 'error');
+    } else {
+        showFinal(score, questions.length, false, globalLessonName);
+    }
+}
+
+function showFinal(score, total, wasDone, lName) {
+    const percent = (score / total) * 100;
+    const isPassed = percent >= 50;
+    
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('main-quiz').innerHTML = `
+        <div class="bg-white p-12 rounded-[3.5rem] shadow-2xl text-center border-b-[15px] ${isPassed ? 'border-green-500' : 'border-red-500'} fade-in">
+            <div class="w-24 h-24 ${isPassed ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'} rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                <i class="fas ${isPassed ? 'fa-trophy' : 'fa-circle-exclamation'}"></i>
+            </div>
+            ${wasDone ? '<p class="text-red-500 font-black text-xs mb-4 uppercase tracking-tighter">أنت امتحنت الدرس ده قبل كدا</p>' : ''}
+            <h2 class="text-slate-400 font-bold text-sm mb-1">${lName}</h2>
+            <h2 class="text-2xl font-black text-slate-800">${isPassed ? 'عاش يا وحش.. نتيجة مشرفة!' : 'معلش يا بطل.. شد حيلك المرة الجاية'}</h2>
+            
+            <div class="my-10">
+                <div class="text-7xl font-black ${isPassed ? 'text-green-600' : 'text-red-600'}">${score}</div>
+                <div class="text-slate-300 font-black text-xl mt-2">من أصل ${total}</div>
+            </div>
+
+            <button onclick="window.location.href='index_home.html'" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black shadow-lg hover:bg-slate-800 transition-all">
+                العودة للوحة التحكم
+            </button>
+        </div>`;
+    document.getElementById('main-quiz').style.display = 'block';
+}
+
+initialize();
+</script>
+</body>
+</html>
