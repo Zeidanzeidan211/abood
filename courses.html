@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>سوق الكورسات | ابني مستقبلك</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: #fdfbf9; 
+            color: #1e293b; 
+        }
+        .premium-shadow { box-shadow: 0 20px 50px -12px rgba(139, 90, 43, 0.15); }
+        .glass-header { 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(15px); 
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .course-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 2rem;
+        }
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.1);
+        }
+        .btn-buy {
+            background: linear-gradient(135deg, #8b5a2b 0%, #5d3a1d 100%);
+        }
+        .balance-badge {
+            background: #1e293b;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        /* شكل السكرول بار */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #8b5a2b; border-radius: 10px; }
+    </style>
+</head>
+
+<body class="min-h-screen pb-20">
+
+<header class="fixed top-0 left-0 right-0 glass-header z-50">
+    <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <button onclick="location.href='index_home.html'" 
+                class="w-11 h-11 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-900 hover:text-white transition-all">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <h2 class="font-black text-slate-800 text-lg hidden sm:block">النخبة التعليمية</h2>
+        </div>
+
+        <div class="balance-badge px-5 py-2 rounded-2xl flex items-center gap-4 border border-slate-700">
+            <div class="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-wallet text-amber-500 text-sm"></i>
+            </div>
+            <div class="text-right">
+                <p class="text-[8px] text-slate-400 font-bold uppercase leading-tight">فلوسك في المحفظة</p>
+                <p class="font-black text-white leading-none text-sm"><span class="balance-display">0</span> <span class="text-[10px] text-amber-400">جنيه</span></p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 pt-32">
+
+    <div class="flex flex-col md:flex-row gap-6 items-center justify-between mb-12">
+        <div class="text-center md:text-right">
+            <p class="text-amber-700 text-sm font-bold mb-1">يا هلا بيك يا بطل 👋</p>
+            <h1 class="font-black text-4xl text-slate-900 leading-tight">
+                جاهز نبدأ <span class="text-amber-800 underline decoration-amber-200">رحلة النجاح؟</span>
+            </h1>
+        </div>
+
+        <div class="relative w-full md:w-80">
+            <select onchange="setStage(this.value)" 
+                class="w-full bg-white border-none rounded-2xl px-6 py-4 font-bold text-slate-700 shadow-lg focus:ring-2 focus:ring-amber-500 appearance-none cursor-pointer">
+                <option value="all">🎯 كل المواد والمراحل</option>
+                <option value="أحياء ثالثة ثانوي">🧬 رياضيات المرحله الثانويه</option>
+                <option value="علوم متكاملة أولى ثانوي">🧪 رياضيات - أولى ثانوي</option>
+                <option value="علوم إعدادي">📘 رياضيات - إعدادي</option>
+            </select>
+            <i class="fas fa-chevron-down absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+        </div>
+    </div>
+
+    <div id="courses" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        </div>
+
+</main>
+
+<script>
+const SUPABASE_URL = 'https://hinwzmshejgxpfuszdjv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_oJIAhj1JnB9rkehdiOdNrQ_9WgMuo5y';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const STUDENT_NUMBER = localStorage.getItem('student_number');
+
+let CURRENT_STAGE = 'all';
+
+async function loadBalance(){
+    try {
+        const { data, error } = await db.from('profiles').select('balance').eq('student_number', STUDENT_NUMBER).single();
+        if (data) {
+            document.querySelectorAll('.balance-display').forEach(el => {
+                el.innerText = data.balance.toLocaleString();
+            });
+        }
+    } catch (err) { console.error(err); }
+}
+
+async function loadCourses(){
+    const box = document.getElementById('courses');
+    box.innerHTML = '<div class="col-span-full text-center py-20"><i class="fas fa-spinner fa-spin text-3xl text-amber-600 mb-4"></i><p class="font-bold text-slate-400">بنرص لك الكورسات.. ثانية واحدة</p></div>';
+
+    try {
+        let query = db.from('courses').select('*');
+        if(CURRENT_STAGE !== 'all') query = query.eq('stage', CURRENT_STAGE);
+        const { data: courses } = await query;
+
+        const { data: subs } = await db.from('subscriptions').select('course_id').eq('student_number', STUDENT_NUMBER);
+        const subscribedCourseIds = new Set(subs.map(s => s.course_id));
+
+        box.innerHTML = '';
+
+        if(!courses || courses.length === 0) {
+            box.innerHTML = '<div class="col-span-full text-center py-20 text-slate-400 font-bold">للاسف مفيش كورسات هنا دلوقتي.. خليك متابع!</div>';
+            return;
+        }
+
+        courses.forEach(c => {
+            const isSubscribed = subscribedCourseIds.has(c.id);
+            const price = c.price || 0;
+
+            box.innerHTML += `
+                <div class="course-card bg-white overflow-hidden flex flex-col relative group">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="${c.image_url || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800'}" 
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-black/50 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-lg">
+                                ${c.stage}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-8 flex flex-col flex-1">
+                        <h3 class="font-black text-xl text-slate-800 mb-3 group-hover:text-amber-800 transition-colors">${c.title}</h3>
+                        <p class="text-slate-500 text-xs leading-relaxed mb-6 line-clamp-2">${c.description || 'شرح تفصيلي ومبسط للمنهج بالكامل.'}</p>
+
+                        <div class="mt-auto">
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="text-[10px] text-slate-400 font-bold">سعر الكورس</span>
+                                <span class="font-black text-2xl text-slate-900">${price} <small class="text-xs">ج.م</small></span>
+                            </div>
+
+                            ${isSubscribed ? `
+                                <button onclick="openCourse('${c.id}')" 
+                                    class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black hover:bg-amber-700 transition-all flex items-center justify-center gap-2">
+                                    كمل مذاكرتك <i class="fas fa-play-circle"></i>
+                                </button>
+                            ` : `
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button onclick="viewLessons('${c.id}', '${c.title.replace(/'/g, "\\'")}')" 
+                                        class="bg-slate-50 text-slate-600 py-4 rounded-2xl font-bold hover:bg-slate-100 transition-all text-xs">
+                                        شوف المحتوى
+                                    </button>
+                                    <button onclick="buyCourse('${c.id}', ${price})" 
+                                        class="btn-buy text-white py-4 rounded-2xl font-black shadow-lg hover:shadow-amber-200 transition-all text-xs">
+                                        اشتري الكورس
+                                    </button>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    } catch (err) {
+        box.innerHTML = '<p class="text-center text-red-500 font-bold">حصلت مشكلة وإحنا بنجيب الكورسات.. جرب تاني</p>';
+    }
+}
+
+async function viewLessons(courseId, courseTitle) {
+    Swal.fire({ title: 'لحظة بنشوف الدروس...', didOpen: () => Swal.showLoading() });
+    
+    try {
+        const { data: lessons } = await db.from('lessons').select('title').eq('course_id', courseId).order('order_num', { ascending: true });
+        let list = `<div class="text-right mt-4 space-y-2">`;
+        if (lessons?.length > 0) {
+            lessons.forEach((l, i) => {
+                list += `<div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-sm font-bold text-slate-700"><span class="text-amber-600 ml-2">#${i+1}</span> ${l.title}</div>`;
+            });
+        } else {
+            list += `<p class="text-center text-slate-400 py-4">مفيش دروس لسه نزلت للكورس ده</p>`;
+        }
+        list += `</div>`;
+
+        Swal.fire({
+            title: `<span class="font-black text-lg">${courseTitle}</span>`,
+            html: list,
+            confirmButtonText: 'تمام يا بطل',
+            confirmButtonColor: '#8b5a2b'
+        });
+    } catch (err) { Swal.fire('خطأ', 'معرفناش نجيب الدروس', 'error'); }
+}
+
+function setStage(stage){ CURRENT_STAGE = stage; loadCourses(); }
+
+async function buyCourse(courseId, price){
+    const result = await Swal.fire({
+        title: 'عايز تشترك؟',
+        text: `الكورس ده تمنه ${price} جنيه.. جاهز تخصمهم من رصيدك؟`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#8b5a2b',
+        confirmButtonText: 'أيوة، اشترك',
+        cancelButtonText: 'لا، استنى'
+    });
+
+    if(!result.isConfirmed) return;
+
+    Swal.fire({ title: 'بنخلص الإجراءات...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    try {
+        const { data: profile } = await db.from('profiles').select('balance').eq('student_number', STUDENT_NUMBER).single();
+
+        if((profile.balance || 0) < price){
+            Swal.fire('محفظتك فاضية!', 'رصيدك مش كفاية.. اشحن محفظتك الأول وارجع لنا يا بطل', 'error');
+            return;
+        }
+
+        await db.from('subscriptions').insert({ student_number: STUDENT_NUMBER, course_id: courseId });
+        await db.from('profiles').update({ balance: profile.balance - price }).eq('student_number', STUDENT_NUMBER);
+
+        Swal.fire('مبروك يا بطل!', 'تم الاشتراك بنجاح.. يلا ابدأ ذاكر!', 'success');
+        loadBalance();
+        loadCourses();
+    } catch (err) {
+        Swal.fire('مشكلة', 'حصل حاجة غلط وإحنا بنشترك.. جرب تاني', 'error');
+    }
+}
+
+function openCourse(courseId){
+    localStorage.setItem('course_id', courseId);
+    location.href = 'lectures.html';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadBalance();
+    loadCourses();
+});
+</script>
+
+</body>
+</html>
