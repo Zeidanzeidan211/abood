@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>بروفايلي | نظام الطالب الذكي</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body { font-family: "Cairo", sans-serif; background: #f8fafc; color: #1e293b; }
+    .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    .main-gradient { background: linear-gradient(135deg, #0f172a 0%, #334155 100%); }
+    .profile-img-container { position: relative; width: 130px; height: 130px; margin: 0 auto; }
+    .profile-img-container img { width: 100%; height: 100%; border-radius: 30px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: 0.3s; }
+    .profile-img-container:hover img { transform: rotate(-3deg) scale(1.05); }
+    .status-dot { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; display: inline-block; margin-left: 5px; box-shadow: 0 0 10px #22c55e; }
+  </style>
+</head>
+
+<body class="pb-10">
+
+<header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
+  <div class="max-w-lg mx-auto flex justify-between items-center px-6 h-16">
+    <a href="index_home.html" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-500 hover:bg-slate-900 hover:text-white transition-all">
+      <i class="fas fa-arrow-right"></i>
+    </a>
+    <h1 class="font-black text-lg text-slate-800">بروفايلي</h1>
+    <div class="w-10"></div> 
+  </div>
+</header>
+
+<main class="max-w-lg mx-auto px-5 mt-4">
+
+  <div class="main-gradient rounded-[3rem] pt-12 pb-16 px-6 shadow-2xl relative overflow-hidden text-center">
+    <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+    
+    <div class="relative z-10">
+      <div class="profile-img-container group cursor-pointer" onclick="document.getElementById('avatarInput').click()">
+        <img id="avatar" src="https://ui-avatars.com/api/?name=User&background=cbd5e1&color=0f172a" alt="صورة الطالب">
+        <div class="absolute bottom-1 right-1 bg-amber-500 text-white w-9 h-9 rounded-xl flex items-center justify-center shadow-lg border-2 border-white">
+          <i class="fas fa-camera text-xs"></i>
+        </div>
+      </div>
+
+      <h2 id="fullName" class="text-2xl font-black mt-6 text-white tracking-tight">بنجيب بياناتك..</h2>
+      <div class="mt-3 inline-flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-2xl border border-white/10">
+        <span class="text-white/60 text-xs font-bold uppercase tracking-widest">كود الطالب:</span>
+        <span id="studentCodeDisplay" class="text-amber-400 font-black text-sm">—</span>
+      </div>
+      
+      <input type="file" id="avatarInput" accept="image/*" hidden>
+    </div>
+  </div>
+
+  <div class="glass-card rounded-[2.5rem] p-6 shadow-xl -mt-10 mx-4 relative z-20 flex justify-between items-center">
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
+        <i class="fas fa-wallet"></i>
+      </div>
+      <div>
+        <p class="text-slate-400 text-xs font-bold mb-1">محفظتك فيها</p>
+        <h3 id="balance" class="text-2xl font-black text-slate-800 tracking-tighter">0 جنيه</h3>
+      </div>
+    </div>
+    <a href="deposit.html" class="bg-slate-900 text-white px-8 py-3.5 rounded-2xl text-sm font-black shadow-lg hover:bg-amber-600 transition-all active:scale-95">
+      إشحن
+    </a>
+  </div>
+
+  <div class="mt-8 space-y-5">
+    <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
+      <h4 class="text-slate-400 text-[10px] font-black mb-4 px-2 uppercase tracking-[0.2em]">بياناتك الأساسية</h4>
+      
+      <div class="space-y-3">
+        <div class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-50">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-slate-400 shadow-sm">
+                <i class="fas fa-fingerprint text-sm"></i>
+            </div>
+            <span class="text-slate-600 font-bold text-sm">كودك الخاص</span>
+          </div>
+          <span id="studentCode" class="font-black text-slate-800 bg-white px-3 py-1 rounded-lg border border-slate-100 select-all cursor-copy">—</span>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-50">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-green-500 shadow-sm">
+                <i class="fas fa-user-check text-sm"></i>
+            </div>
+            <span class="text-slate-600 font-bold text-sm">حالة الحساب</span>
+          </div>
+          <div class="flex items-center text-green-600 font-black text-xs bg-green-50 px-3 py-1.5 rounded-xl">
+            <span class="status-dot"></span> منور يا بطل
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <a href="register_Deposit.html" class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col items-center gap-3 hover:border-amber-200 transition-all group">
+        <div class="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
+          <i class="fas fa-receipt"></i>
+        </div>
+        <span class="font-black text-xs text-slate-700">دفعاتي القديمة</span>
+      </a>
+      
+      <button onclick="logout()" class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col items-center gap-3 hover:bg-red-50 transition-all group">
+        <div class="w-12 h-12 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
+          <i class="fas fa-power-off"></i>
+        </div>
+        <span class="font-black text-xs text-red-500">خروج نهائي</span>
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // بيانات الربط (زي ما هي)
+  const SUPABASE_URL = 'https://hinwzmshejgxpfuszdjv.supabase.co'
+  const SUPABASE_KEY = 'sb_publishable_oJIAhj1JnB9rkehdiOdNrQ_9WgMuo5y'
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+  const studentNumber = localStorage.getItem('student_number')
+  if (!studentNumber) location.href = 'login.html'
+
+  function generateStudentCode() {
+    const prefix = "STU";
+    const rand = Math.random().toString(36).substr(2, 6).toUpperCase();
+    return `${prefix}-${rand}`;
+  }
+
+  async function loadProfile() {
+    try {
+      const { data, error } = await db
+        .from('profiles')
+        .select('*')
+        .eq('student_number', studentNumber)
+        .single()
+
+      if (error || !data) throw new Error('User not found');
+
+      document.getElementById('fullName').innerText = data.full_name;
+      document.getElementById('balance').innerText = `${data.balance || 0} جنيه`;
+      
+      if (data.avatar_url) {
+        document.getElementById('avatar').src = data.avatar_url;
+      }
+
+      let code = data.student_code;
+      if (!code) {
+        code = generateStudentCode();
+        await db.from('profiles').update({ student_code: code }).eq('student_number', studentNumber);
+      }
+      
+      document.getElementById('studentCode').innerText = code;
+      document.getElementById('studentCodeDisplay').innerText = code;
+
+    } catch (err) {
+      console.error(err);
+      alert('في مشكلة حصلت وإحنا بنجيب بياناتك.. جرب تاني');
+    }
+  }
+
+  const avatarInput = document.getElementById('avatarInput');
+  const avatarImg = document.getElementById('avatar');
+
+  avatarInput.onchange = async () => {
+    const file = avatarInput.files[0];
+    if (!file) return;
+
+    avatarImg.style.opacity = "0.5";
+    
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${studentNumber}-${Date.now()}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+
+    const { error: uploadError } = await db.storage
+      .from('avatars')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      alert('الصورة معرفناش نرفعها.. جرب حجم أصغر');
+      avatarImg.style.opacity = "1";
+      return;
+    }
+
+    const { data } = db.storage.from('avatars').getPublicUrl(filePath);
+    
+    await db.from('profiles')
+      .update({ avatar_url: data.publicUrl })
+      .eq('student_number', studentNumber);
+
+    avatarImg.src = data.publicUrl;
+    avatarImg.style.opacity = "1";
+  };
+
+  function logout() {
+    if(confirm('خارج بجد؟ هنستناك ترجع تاني يا بطل!')) {
+        localStorage.clear();
+        location.href = 'login.html';
+    }
+  }
+
+  loadProfile();
+</script>
+
+</body>
+</html>
