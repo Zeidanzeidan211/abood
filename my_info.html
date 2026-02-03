@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تقرير ولي الأمر المطور</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background:#f8fafc; }
+        .brown-theme { background: linear-gradient(135deg, #8b5a2b 0%, #5d3a1d 100%); }
+        .card-stats { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid rgba(0,0,0,0.05); }
+        .card-stats:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .progress-ring { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        table th { background: #f1f5f9; color: #475569; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        /* أنيميشن بسيط لظهور الزر */
+        .btn-back { transition: all 0.3s ease; }
+        .btn-back:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-6xl mx-auto space-y-8">
+    
+    <div class="flex justify-start">
+        <a href="index_home.html" class="btn-back flex items-center gap-2 bg-white/80 backdrop-blur-md px-5 py-2 rounded-2xl border border-slate-200 text-slate-700 font-bold text-sm shadow-sm">
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span>الرجوع للمنصة</span>
+        </a>
+    </div>
+
+    <header class="brown-theme text-white p-8 rounded-[2.5rem] shadow-2xl flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
+        <div class="relative z-10 text-center md:text-right">
+            <span class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">تقرير الأداء الأكاديمي</span>
+            <h1 class="text-4xl font-black mb-2">متابعة الطالب</h1>
+            <p id="current-date" class="text-amber-100/80 font-medium text-sm"></p>
+        </div>
+        <div class="mt-6 md:mt-0 z-10 flex items-center gap-4 bg-white/10 p-4 rounded-3xl backdrop-blur-xl border border-white/20">
+            <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div>
+                <p class="text-[10px] text-amber-200 font-bold uppercase">اسم الطالب المسجل</p>
+                <h2 id="student-display-name" class="font-black text-xl leading-none">جاري التحميل...</h2>
+            </div>
+        </div>
+    </header>
+
+    <div id="loading-area" class="py-20 text-center">
+        <div class="w-16 h-16 border-4 border-amber-900 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p class="font-bold text-slate-500 italic">نجمع بيانات الإنجاز الآن...</p>
+    </div>
+
+    <main id="main-content" class="hidden space-y-8 animate-in fade-in duration-700">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-[2.5rem] shadow-sm flex items-center gap-6 border border-slate-100">
+                <div class="relative w-24 h-24">
+                    <svg class="w-full h-full">
+                        <circle cx="48" cy="48" r="40" stroke="#f1f5f9" stroke-width="8" fill="transparent" />
+                        <circle id="progress-circle" cx="48" cy="48" r="40" stroke="#8b5a2b" stroke-width="8" fill="transparent" 
+                                stroke-dasharray="251.2" stroke-dashoffset="251.2" class="progress-ring" stroke-linecap="round" />
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center font-black text-xl" id="progress-text">0%</div>
+                </div>
+                <div>
+                    <h3 class="font-black text-slate-800">إجمالي الإنجاز</h3>
+                    <p class="text-xs text-slate-500 font-bold">نسبة الدروس المشاهدة</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 col-span-2">
+                <div class="card-stats bg-white p-6 rounded-[2rem] border-b-4 border-blue-500">
+                    <p class="stat-title italic">كورسات مشتركة</p>
+                    <h2 id="courses-count" class="stat-value">0</h2>
+                </div>
+                <div class="card-stats bg-white p-6 rounded-[2rem] border-b-4 border-green-500">
+                    <p class="stat-title italic">دروس منتهية</p>
+                    <h2 id="watched-lessons" class="stat-value">0</h2>
+                </div>
+                <div class="card-stats bg-white p-6 rounded-[2rem] border-b-4 border-purple-500">
+                    <p class="stat-title italic">اختبارات منجزة</p>
+                    <h2 id="quizzes-done" class="stat-value">0</h2>
+                </div>
+                <div class="card-stats bg-white p-6 rounded-[2rem] border-b-4 border-amber-500">
+                    <p class="stat-title italic">متوسط الدرجات</p>
+                    <h2 id="avg-score" class="stat-value text-amber-600">0%</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-sm">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-black text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-amber-700"></i> تحليل مستوى الدرجات
+                    </h3>
+                </div>
+                <canvas id="studentChart" height="200"></canvas>
+            </div>
+
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-sm overflow-hidden">
+                <h3 class="font-black text-slate-800 mb-6 flex items-center gap-2">
+                    <i class="fas fa-list-check text-amber-700"></i> سجل آخر الاختبارات
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-right">
+                                <th class="p-4 rounded-r-2xl">الدرس</th>
+                                <th class="p-4">الدرجة</th>
+                                <th class="p-4 rounded-l-2xl text-center">التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quizzes-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+const SB_URL = 'https://hinwzmshejgxpfuszdjv.supabase.co';
+const SB_KEY = 'sb_publishable_oJIAhj1JnB9rkehdiOdNrQ_9WgMuo5y';
+const db = supabase.createClient(SB_URL, SB_KEY);
+const STUDENT_NUMBER = localStorage.getItem('student_number');
+
+async function loadReport() {
+    try {
+        if(!STUDENT_NUMBER) throw new Error('يرجى تسجيل الدخول أولاً');
+
+        const [profileRes, subsRes, lessonsRes, progressRes, quizResultsRes] = await Promise.all([
+            db.from('profiles').select('*').eq('student_number', STUDENT_NUMBER).maybeSingle(),
+            db.from('subscriptions').select('*').eq('student_number', STUDENT_NUMBER),
+            db.from('lessons').select('*'),
+            db.from('lecture_progress').select('*').eq('student_number', STUDENT_NUMBER),
+            db.from('student_results').select('*').eq('student_id', STUDENT_NUMBER)
+        ]);
+
+        const profile = profileRes.data;
+        if(!profile) throw new Error('بيانات الطالب غير موجودة');
+        document.getElementById('student-display-name').innerText = profile.full_name;
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('ar-EG', { dateStyle: 'full' });
+
+        const subscribedCourseIds = (subsRes.data || []).map(s => s.course_id);
+        const relevantLessons = (lessonsRes.data || []).filter(l => subscribedCourseIds.includes(l.course_id));
+        const watchedCount = (progressRes.data || []).filter(p => p.watched).length;
+        
+        document.getElementById('courses-count').innerText = subscribedCourseIds.length;
+        document.getElementById('watched-lessons').innerText = watchedCount;
+        document.getElementById('quizzes-done').innerText = (quizResultsRes.data || []).length;
+
+        const progressPercent = relevantLessons.length > 0 ? Math.round((watchedCount / relevantLessons.length) * 100) : 0;
+        const circle = document.getElementById('progress-circle');
+        const offset = 251.2 - (progressPercent / 100 * 251.2);
+        circle.style.strokeDashoffset = offset;
+        document.getElementById('progress-text').innerText = progressPercent + "%";
+
+        let totalPct = 0;
+        const results = (quizResultsRes.data || []).map(res => {
+            const pct = (res.score / res.total_questions) * 100;
+            totalPct += pct;
+            return { ...res, pct: Math.round(pct) };
+        });
+
+        const avg = results.length > 0 ? Math.round(totalPct / results.length) : 0;
+        document.getElementById('avg-score').innerText = avg + "%";
+
+        const ctx = document.getElementById('studentChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: results.map((_, i) => `اختبار ${i+1}`),
+                datasets: [{
+                    label: 'مستوى الدرجات %',
+                    data: results.map(r => r.pct),
+                    borderColor: '#8b5a2b',
+                    backgroundColor: 'rgba(139, 90, 43, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#8b5a2b'
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { max: 100, min: 0 } } }
+        });
+
+        const tbody = document.getElementById('quizzes-tbody');
+        tbody.innerHTML = results.slice(0, 5).map(res => `
+            <tr class="border-b border-slate-50 hover:bg-slate-50/50">
+                <td class="p-4 font-bold text-slate-700">${res.lesson_name || 'درس غير محدد'}</td>
+                <td class="p-4">
+                    <span class="font-black ${res.pct >= 50 ? 'text-green-600' : 'text-red-600'}">${res.score}/${res.total_questions}</span>
+                </td>
+                <td class="p-4 text-center text-slate-400 text-xs">${new Date(res.created_at).toLocaleDateString('ar-EG')}</td>
+            </tr>
+        `).join('');
+
+        document.getElementById('loading-area').style.display = 'none';
+        document.getElementById('main-content').classList.remove('hidden');
+
+    } catch(e) {
+        document.getElementById('loading-area').innerHTML = `<p class="text-red-500">${e.message}</p>`;
+    }
+}
+
+loadReport();
+</script>
+</body>
+</html>
