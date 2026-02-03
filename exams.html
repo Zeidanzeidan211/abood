@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>اختباراتي التعليمية - المشتريات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #f4f7f9; color: #1e293b; }
+        .brown { background: #8b5a2b; }
+        .brown-text { color: #8b5a2b; }
+        .quiz-card { background: #ffffff; border-radius: 24px; transition: all 0.4s; border: 1px solid #e2e8f0; }
+        .quiz-card:hover { transform: translateY(-8px); border-color: #8b5a2b; }
+        .btn-enter { background: #8b5a2b; transition: 0.3s; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #8b5a2b; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+<header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto p-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="brown p-2 rounded-xl text-white shadow-md shadow-amber-900/20">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1 class="font-black text-xl text-gray-800">اختباراتي المتاحة</h1>
+        </div>
+        <a href="index_home.html" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gray-50 text-gray-600 font-bold text-sm">
+            <span>الرجوع للمنصة</span>
+        </a>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto p-6" id="content">
+    <div class="flex flex-col items-center justify-center py-32 text-center">
+        <div class="loader mb-4"></div>
+        <p class="font-bold text-gray-400">جاري التحقق من اشتراكاتك...</p>
+    </div>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://hinwzmshejgxpfuszdjv.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_oJIAhj1JnB9rkehdiOdNrQ_9WgMuo5y'
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+// جلب رقم الطالب من التخزين المحلي
+const studentId = localStorage.getItem('student_number');
+const content = document.getElementById('content');
+
+async function loadQuizzes(){
+  // 1. التحقق من تسجيل الدخول
+  if(!studentId){
+      content.innerHTML = `<div class="text-center py-20 font-bold text-red-500">⚠️ يرجى تسجيل الدخول أولاً.</div>`;
+      return;
+  }
+
+  try {
+      // 2. جلب الكورسات اللي الطالب شاريها فعلياً
+      const { data: mySubs, error: subError } = await db
+        .from('enrollments')
+        .select('course_id')
+        .eq('student_id', studentId);
+
+      // إذا فشل الجلب أو لا يوجد اشتراكات
+      if(subError || !mySubs || mySubs.length === 0){
+        content.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-20 bg-white rounded-[40px] shadow-sm border border-dashed border-gray-200">
+                <div class="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mb-4 text-amber-600">
+                    <i class="fas fa-lock text-3xl"></i>
+                </div>
+                <h2 class="text-xl font-black text-gray-800">لا توجد اختبارات متاحة!</h2>
+                <p class="text-gray-500 font-bold mt-2">عذراً، أنت غير مشترك في أي كورس حالياً لتظهر لك الاختبارات.</p>
+                <a href="index_home.html" class="mt-6 brown text-white px-8 py-3 rounded-2xl font-bold">تصفح الكورسات المتاحة</a>
+            </div>`;
+        return;
+      }
+
+      // تحويل الاشتراكات لمصفوفة IDs (مثلاً: ["id1", "id2"])
+      const enrolledCourseIds = mySubs.map(s => s.course_id);
+
+      // 3. جلب الدروس اللي بتنتمي للكورسات دي بس
+      const { data: lessons, error: lessonError } = await db
+        .from('lessons')
+        .select('id, title, course_id')
+        .in('course_id', enrolledCourseIds) // البحث فقط في الكورسات المشترك بها
+        .order('order_num', { ascending: true });
+
+      if(lessonError || !lessons || lessons.length === 0){
+        content.innerHTML = `<p class="text-center py-20 text-gray-400 font-bold">أنت مشترك في كورس، ولكن لا توجد اختبارات مرفوعة له بعد.</p>`;
+        return;
+      }
+
+      let htmlContent = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">`;
+      let foundAnyQuiz = false;
+
+      // 4. عرض الدروس اللي فيها اختبارات فعلياً
+      for(const lesson of lessons){
+        const { data: quizzes } = await db
+          .from('quizzes')
+          .select('id')
+          .eq('lesson_id', lesson.id);
+
+        if(quizzes && quizzes.length > 0){
+          foundAnyQuiz = true;
+          htmlContent += `
+            <section class="quiz-card p-6 flex flex-col h-full shadow-sm">
+                <div class="mb-6">
+                    <div class="inline-block px-3 py-1 bg-green-50 text-green-700 text-[10px] font-black rounded-lg mb-3">
+                        محتوى متاح ✅
+                    </div>
+                    <h2 class="font-black text-xl text-gray-800 leading-relaxed min-h-[60px]">${lesson.title}</h2>
+                </div>
+                <div class="mt-auto">
+                    <a href="quiz.html?lesson_id=${lesson.id}" class="btn-enter text-white px-6 py-4 rounded-2xl font-black flex justify-center items-center gap-3 w-full shadow-lg">
+                        <span>دخول الاختبار</span>
+                        <i class="fas fa-play text-[10px]"></i>
+                    </a>
+                </div>
+            </section>`;
+        }
+      }
+
+      htmlContent += `</div>`;
+      content.innerHTML = foundAnyQuiz ? htmlContent : `<p class="text-center py-20">لا توجد اختبارات في الكورسات المشترك بها.</p>`;
+
+  } catch (err) {
+      console.error(err);
+      content.innerHTML = `<p class="text-center py-20 text-red-500">حدث خطأ أثناء تحميل البيانات.</p>`;
+  }
+}
+
+loadQuizzes();
+</script>
+
+</body>
+</html>
